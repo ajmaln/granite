@@ -117,3 +117,12 @@ cypress-tests/cypress/videos/
 # Ignore test report folder
 /test/reports
 cypress-tests/debug.log
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+package-lock.json
