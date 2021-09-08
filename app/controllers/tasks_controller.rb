@@ -16,6 +16,15 @@ class TasksController < ApplicationController
     end
   end
 
+  def show
+    task = Task.find_by(slug: params[:slug])
+    if task
+      render status: :ok, json: { task: task }
+    else
+      render status: :not_found, json: { error: t("task.not_found") }
+    end
+  end
+
   private
 
     def task_params
