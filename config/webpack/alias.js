@@ -3,7 +3,8 @@ module.exports = {
     alias: {
       apis: "src/apis",
       common: "src/common",
-      components: "src/components"
+      components: "src/components",
+      helpers: "src/helpers"
     }
   }
 };
