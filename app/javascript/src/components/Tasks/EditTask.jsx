@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import tasksApi from "apis/tasks";
+import usersApi from "apis/users";
 import Container from "components/Container";
 import PageLoader from "components/PageLoader";
 
@@ -11,6 +12,8 @@ import TaskForm from "./Form/TaskForm";
 const EditTask = ({ history }) => {
   const [title, setTitle] = useState("");
   const [userId, setUserId] = useState("");
+  const [assignedUser, setAssignedUser] = useState("");
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const { slug } = useParams();
@@ -20,7 +23,7 @@ const EditTask = ({ history }) => {
     try {
       await tasksApi.update({
         slug,
-        payload: { task: { title } }
+        payload: { task: { title, user_id: userId } }
       });
       setLoading(false);
       history.push("/dashboard");
@@ -30,11 +33,10 @@ const EditTask = ({ history }) => {
     }
   };
 
-  const fetchTaskDetails = async () => {
+  const fetchUserDetails = async () => {
     try {
-      const response = await tasksApi.show(slug);
-      setTitle(response.data.task.title);
-      setUserId(response.data.task.user_id);
+      const response = await usersApi.list();
+      setUsers(response.data.users);
     } catch (error) {
       logger.error(error);
     } finally {
@@ -42,8 +44,24 @@ const EditTask = ({ history }) => {
     }
   };
 
+  const fetchTaskDetails = async () => {
+    try {
+      const response = await tasksApi.show(slug);
+      setTitle(response.data.task.title);
+      setAssignedUser(response.data.assigned_user);
+      setUserId(response.data.assigned_user.id);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const loadData = async () => {
+    await fetchTaskDetails();
+    await fetchUserDetails();
+  };
+
   useEffect(() => {
-    fetchTaskDetails();
+    loadData();
   }, []);
 
   if (pageLoading) {
@@ -59,7 +77,8 @@ const EditTask = ({ history }) => {
       <TaskForm
         type="update"
         title={title}
-        userId={userId}
+        users={users}
+        assignedUser={assignedUser}
         setTitle={setTitle}
         setUserId={setUserId}
         loading={loading}

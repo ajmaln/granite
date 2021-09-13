@@ -7,6 +7,7 @@ const TableRow = ({ data, showTask, destroyTask }) => {
     <tbody className="bg-white divide-y divide-gray-200">
       {data.map(rowData => (
         <tr key={rowData.id}>
+          <td></td>
           <td
             className="block w-64 px-6 py-4 text-sm font-medium
             leading-8 text-bb-purple capitalize truncate"
